@@ -1,4 +1,5 @@
 import 'package:chat_app/controllers/authentication_controller.dart';
+import 'package:chat_app/views/screens/chat_page.dart';
 import 'package:chat_app/views/screens/sign_up_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -120,6 +121,16 @@ class LoginPage extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () async {
                     await authenticationController.login();
+                    Future.delayed(
+                      const Duration(milliseconds: 500),
+                      () {
+                        Get.to(ChatPage());
+                      },
+                    );
+                    authenticationController.userNameController.clear();
+                    authenticationController.passwordController.clear();
+                    authenticationController.rememberMe.value = false;
+                    authenticationController.passwordIsSeen.value = false;
                   },
                   style: ButtonStyle(
                     foregroundColor: MaterialStateProperty.all(Colors.white),

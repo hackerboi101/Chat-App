@@ -1,13 +1,19 @@
-import 'package:chat_app/views/screens/sign_up_page.dart';
+import 'package:chat_app/controllers/authentication_controller.dart';
+import 'package:chat_app/views/screens/chat_page.dart';
+import 'package:chat_app/views/screens/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
+
+  final AuthenticationController authenticationController = Get.put(
+    AuthenticationController(),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +29,19 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Poppins',
         useMaterial3: true,
       ),
-      home: SignUpPage(),
+      home: FutureBuilder(
+        future: authenticationController.isLoggedIn(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.data == true) {
+              return ChatPage();
+            } else {
+              return LoginPage();
+            }
+          }
+          return LoginPage();
+        },
+      ),
     );
   }
 }

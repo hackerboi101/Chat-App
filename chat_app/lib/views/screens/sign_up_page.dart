@@ -170,11 +170,18 @@ class SignUpPage extends StatelessWidget {
                   onPressed: () async {
                     await signUpController.signUp();
                     Future.delayed(
-                      const Duration(seconds: 1),
+                      const Duration(milliseconds: 500),
                       () {
-                        Get.to(const ChatPage());
+                        Get.to(ChatPage());
                       },
                     );
+                    signUpController.userNameController.clear();
+                    signUpController.nameController.clear();
+                    signUpController.emailController.clear();
+                    signUpController.passwordController.clear();
+                    signUpController.confirmPasswordController.clear();
+                    signUpController.passwordIsSeen.value = false;
+                    signUpController.confirmPasswordIsSeen.value = false;
                   },
                   style: ButtonStyle(
                     foregroundColor: MaterialStateProperty.all(Colors.white),

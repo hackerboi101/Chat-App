@@ -121,3 +121,18 @@ app.post("/user/login", async (req, res) => {
         res.status(500).send("Error logging in");
     }
 });
+
+let blacklist = [];
+
+app.get("/user/logout", (req, res) => {
+    const token = req.headers.authorization.split(" ")[1];
+
+    if (token) {
+        blacklist.push(token);
+    }
+
+    res.status(200).json({
+        success: true,
+        message: "Logged out successfully"
+    });
+});

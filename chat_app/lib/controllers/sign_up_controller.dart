@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -47,6 +47,12 @@ class SignUpController extends GetxController {
       );
 
       if (response.statusCode == 201) {
+        var responseBody = jsonDecode(response.body);
+        String jwt = responseBody['data']['token'];
+
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('jwt', jwt);
+
         Get.snackbar(
           'Success',
           'Sign Up Successful',
