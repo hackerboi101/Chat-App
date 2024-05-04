@@ -41,7 +41,7 @@ const multer = require("multer");
 const { GridFsStorage } = require('multer-gridfs-storage');
 
 const storage = new GridFsStorage({
-  url: process.env.MONGO_URI,
+  url: 'mongodb+srv://asifiq024:t6cmXlifxwZWq7eQ@chatapp.nhheol0.mongodb.net/?retryWrites=true&w=majority&appName=chatapp',
   options: { useNewUrlParser: true, useUnifiedTopology: true },
   file: (req, file) => {
     return new Promise((resolve, reject) => {
