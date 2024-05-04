@@ -83,6 +83,12 @@ server.listen(port, function(err) {
 });
 
 
+//root get method
+
+app.get("/", (req, res) => {
+    res.send("Hello World!");
+});
+
 app.post("/user/signup", async (req, res) => {
     console.log(req.body);
 
