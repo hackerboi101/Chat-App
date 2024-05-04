@@ -5,45 +5,83 @@ const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 var http = require("http");
-const socketio = require("socket.io");
+const socketio = require("socket.io")(server)
 const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 5000;
 var server = http.createServer(app);
-const io = socketio(server, {
-    cors: {
-        origin: "*"
-    },
-});
 
 // Connect to MongoDB
 mongoose.connect("mongodb://localhost:27017/chat_app")
     .then(() => console.log("Connected to MongoDB"))
     .catch(err => console.error("Could not connect to MongoDB", err));
 
-// Define User model
+
+socketio.on("connection", function(client) {
+    console.log("Connected...", client.id);
+
+    client.on('message', function name(data) {
+        console.log(data);
+        socketio.emit('message', data);
+    });
+    
+    client.on('disconnect', function() {
+        console.log("Disconnected...", client.id);
+    });
+
+    client.on('error', function(err) {
+        console.log('Error detected', client.id);
+        console.log(err);
+    });
+});
+
+
+const multer = require("multer");
+const { GridFsStorage } = require('multer-gridfs-storage');
+
+const storage = new GridFsStorage({
+  url: 'mongodb://localhost:27017/chat_app',
+  options: { useNewUrlParser: true, useUnifiedTopology: true },
+  file: (req, file) => {
+    return new Promise((resolve, reject) => {
+      const filename = file.originalname;
+      if (!filename) {
+        const err = new Error('File info could not be generated');
+        err.code = 'FILE_INFO_GEN_ERR';
+        reject(err);
+      }
+      const fileInfo = {
+        filename: filename,
+        bucketName: 'uploads',
+        path: '/uploads/' + filename
+      };
+      resolve(fileInfo);
+    });
+  }
+});
+
+const upload = multer({ storage });
+
+
+// User model
 const User = mongoose.model("User", {
     username: String,
     name: String,
     email: String,
-    password: String
+    password: String,
+    profilepicture: String,
 });
 
 //middleware
 app.use(cors());
 app.use(express.json());
 
-io.on("connection", (socket) => {
-    console.log("Connected");
-    console.log(socket.id, "has joined");
-    socket.on("/test", (msg) => {
-        console.log(msg);
-    });
-})
 
-server.listen(port, "192.168.0.171", () => { 
-    console.log(`Server started on port ${port}`);
+server.listen(port, function(err) {
+    if(err) console.log(err);
+    console.log('Listening on port', port);
 });
+
 
 app.post("/user/signup", async (req, res) => {
     console.log(req.body);
@@ -135,4 +173,163 @@ app.get("/user/logout", (req, res) => {
         success: true,
         message: "Logged out successfully"
     });
+});
+
+
+app.get("/user/profile", async (req, res) => {
+    const token = req.headers.authorization.split(" ")[1];
+    if (!token) {
+        return res.status(401).json({
+            success: false,
+            message: "Unauthorized"
+        });
+    }
+    if (blacklist.includes(token)) {
+        return res.status(401).json({
+            success: false,
+            message: "Unauthorized"
+        });
+    }
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+        if (decoded) {
+            const user = await User.findOne({ username: decoded.user.username });
+            if (user) {
+                res.status(200).json({
+                    success: true,
+                    data: {
+                        username: user.username,
+                        name: user.name,
+                        email: user.email
+                    }
+                });
+            } else {
+                res.status(404).json({
+                    success: false,
+                    message: "User not found"
+                });
+            }
+        } else {
+            res.status(401).json({
+                success: false,
+                message: "Unauthorized"
+            });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Error getting profile data");
+    }
+});
+
+
+app.put("/user/profile", async (req, res) => {
+    const token = req.headers.authorization.split(" ")[1];
+    if (!token) {
+        return res.status(401).json({
+            success: false,
+            message: "Unauthorized"
+        });
+    }
+    if (blacklist.includes(token)) {
+        return res.status(401).json({
+            success: false,
+            message: "Unauthorized"
+        });
+    }
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+        if (decoded) {
+            const user = await User.findOne({ username: decoded.user.username });
+            if (user) {
+                const { name, email } = req.body;
+                user.name = name || user.name;
+                user.email = email || user.email;
+                await user.save();
+                res.status(200).json({
+                    success: true,
+                    data: {
+                        username: user.username,
+                        name: user.name,
+                        email: user.email
+                    }
+                });
+            } else {
+                res.status(404).json({
+                    success: false,
+                    message: "User not found"
+                });
+            }
+        } else {
+            res.status(401).json({
+                success: false,
+                message: "Unauthorized"
+            });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Error editing profile data");
+    }
+});
+
+
+app.post("/user/profile/picture", upload.single("profilepicture") , async (req, res) => {
+    const token = req.headers.authorization.split(" ")[1];
+    if (!token) {
+        return res.status(401).json({
+            success: false,
+            message: "Unauthorized"
+        });
+    }
+    if (blacklist.includes(token)) {
+        return res.status(401).json({
+            success: false,
+            message: "Unauthorized"
+        });
+    }
+
+    console.log(req.file);
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+        if (decoded) {
+            const user = await User.findOne({ username: decoded.user.username });
+            if (user) {
+
+                if (!req.file) {
+                    return res.status(400).json({
+                        success: false,
+                        message: "No file uploaded"
+                    });
+                }
+
+                console.log(req.file.filename);
+
+                user.profilepicture = req.file.filename;
+
+                console.log(user.profilepicture);
+                await user.save();
+
+                console.log(user.profilepicture);
+                res.status(200).json({
+                    success: true,
+                    data: {
+                        profilepicture: user.profilepicture
+                    }
+                });
+
+            } else {
+                res.status(404).json({
+                    success: false,
+                    message: "User not found"
+                });
+            }
+        } else {
+            res.status(401).json({
+                success: false,
+                message: "Unauthorized"
+            });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Error editing profile data");
+    }
 });

@@ -1,5 +1,7 @@
 import 'package:chat_app/controllers/authentication_controller.dart';
+import 'package:chat_app/controllers/profile_controller.dart';
 import 'package:chat_app/views/screens/login_page.dart';
+import 'package:chat_app/views/screens/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -8,6 +10,7 @@ class ChatPage extends StatelessWidget {
 
   final AuthenticationController authenticationController =
       Get.put(AuthenticationController());
+  final ProfileController profileController = Get.put(ProfileController());
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +21,11 @@ class ChatPage extends StatelessWidget {
         title: const Text('Chat App'),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () async {
+              await profileController.getProfile();
+
+              Get.to(ProfilePage());
+            },
             icon: const Icon(Icons.account_circle_rounded),
           ),
           IconButton(
