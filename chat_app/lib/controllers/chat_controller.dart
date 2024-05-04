@@ -18,7 +18,8 @@ class ChatController extends GetxController {
   }
 
   void initializeSocketIO() {
-    socket = io("http://192.168.0.171:5000", <String, dynamic>{
+    socket =
+        io("https://chat-app-server-ib5y.onrender.com:5000", <String, dynamic>{
       'transports': ['websocket'],
       'autoConnect': false,
     });

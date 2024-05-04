@@ -34,7 +34,7 @@ class SignUpController extends GetxController {
           'Username: ${userNameController.text}, name: ${nameController.text}, email: ${emailController.text}, password: ${passwordController.text}');
 
       http.Response response = await http.post(
-        Uri.parse('http://192.168.0.171:5000/user/signup'),
+        Uri.parse('https://chat-app-server-ib5y.onrender.com:5000/user/signup'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },

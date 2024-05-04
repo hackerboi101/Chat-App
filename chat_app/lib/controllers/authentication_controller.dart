@@ -22,7 +22,7 @@ class AuthenticationController extends GetxController {
       }
 
       http.Response response = await http.post(
-        Uri.parse('http://192.168.0.171:5000/user/login'),
+        Uri.parse('https://chat-app-server-ib5y.onrender.com:5000/user/login'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -66,7 +66,7 @@ class AuthenticationController extends GetxController {
       String jwt = prefs.getString('jwt')!;
 
       http.Response response = await http.get(
-        Uri.parse('http://192.168.0.171:5000/user/logout'),
+        Uri.parse('https://chat-app-server-ib5y.onrender.com:5000/user/logout'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $jwt',
