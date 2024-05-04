@@ -10,9 +10,11 @@ const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 5000;
 var server = http.createServer(app);
+const uri = "mongodb+srv://asifiq024:t6cmXlifxwZWq7eQ@chatapp.nhheol0.mongodb.net/?retryWrites=true&w=majority&appName=chatapp"
+
 
 // Connect to MongoDB
-mongoose.connect("mongodb://chat-app-server-ib5y.onrender.com:5000/chat_app")
+mongoose.connect(uri)
     .then(() => console.log("Connected to MongoDB"))
     .catch(err => console.error("Could not connect to MongoDB", err));
 
