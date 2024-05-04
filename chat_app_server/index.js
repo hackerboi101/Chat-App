@@ -10,10 +10,10 @@ const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 5000;
 var server = http.createServer(app);
-
+const uri = process.env.MONGO_URI;
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect(uri)
     .then(() => console.log("Connected to MongoDB"))
     .catch(err => console.error("Could not connect to MongoDB", err));
 
