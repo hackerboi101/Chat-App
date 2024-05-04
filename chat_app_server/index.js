@@ -12,7 +12,7 @@ const port = process.env.PORT || 5000;
 var server = http.createServer(app);
 
 // Connect to MongoDB
-mongoose.connect("mongodb://chat-app-server-ib5y.onrender.com:27017/chat_app")
+mongoose.connect("mongodb://chat-app-server-ib5y.onrender.com:5000/chat_app")
     .then(() => console.log("Connected to MongoDB"))
     .catch(err => console.error("Could not connect to MongoDB", err));
 
@@ -40,7 +40,7 @@ const multer = require("multer");
 const { GridFsStorage } = require('multer-gridfs-storage');
 
 const storage = new GridFsStorage({
-  url: 'mongodb://chat-app-server-ib5y.onrender.com:27017/chat_app',
+  url: 'mongodb://chat-app-server-ib5y.onrender.com:5000/chat_app',
   options: { useNewUrlParser: true, useUnifiedTopology: true },
   file: (req, file) => {
     return new Promise((resolve, reject) => {
