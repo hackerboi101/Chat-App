@@ -10,11 +10,10 @@ const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 5000;
 var server = http.createServer(app);
-const uri = "mongodb+srv://asifiq024:t6cmXlifxwZWq7eQ@chatapp.nhheol0.mongodb.net/?retryWrites=true&w=majority&appName=chatapp"
 
 
 // Connect to MongoDB
-mongoose.connect(uri)
+mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log("Connected to MongoDB"))
     .catch(err => console.error("Could not connect to MongoDB", err));
 
@@ -42,7 +41,7 @@ const multer = require("multer");
 const { GridFsStorage } = require('multer-gridfs-storage');
 
 const storage = new GridFsStorage({
-  url: 'mongodb://chat-app-server-ib5y.onrender.com:5000/chat_app',
+  url: process.env.MONGO_URI,
   options: { useNewUrlParser: true, useUnifiedTopology: true },
   file: (req, file) => {
     return new Promise((resolve, reject) => {
