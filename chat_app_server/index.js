@@ -364,7 +364,7 @@ app.post("/user/profile/picture", upload.single("profilepicture") , async (req, 
     }
 });
 
-app.get("/users", async (_, res) => {
+app.get("/users", async (req, res) => {
     const token = req.headers.authorization.split(" ")[1];
     if (!token) {
         return res.status(401).json({
