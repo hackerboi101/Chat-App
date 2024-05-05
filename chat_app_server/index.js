@@ -63,29 +63,38 @@ const storage = new GridFsStorage({
 
 const upload = multer({ storage });
 
-//Chat model
-const Chat = mongoose.model("Chat", {
+const { Schema } = mongoose;
+
+// Chat schema
+const chatSchema = new Schema({
+    id: String,
     username: String,
     sentat: String,
     message: String,
 });
 
-//Chats model
-const Chats = mongoose.model("Chats", {
+const Chat = mongoose.model("Chat", chatSchema);
+
+// Chats schema
+const chatsSchema = new Schema({
     socketid: String,
     username: String,
-    chat: [Chat],
+    chat: [chatSchema],
 });
 
+const Chats = mongoose.model("Chats", chatsSchema);
+
 // User model
-const User = mongoose.model("User", {
+const userSchema = new Schema({
     username: String,
     name: String,
     email: String,
     password: String,
     profilepicture: String,
-    chats: [Chats],
+    chats: [chatsSchema],
 });
+
+const User = mongoose.model("User", userSchema);
 
 //middleware
 app.use(cors());
