@@ -364,35 +364,21 @@ app.post("/user/profile/picture", upload.single("profilepicture") , async (req, 
     }
 });
 
-app.get("/users", async (req, res) => {
-    const token = req.headers.authorization.split(" ")[1];
-    if (!token) {
-        return res.status(401).json({
-            success: false,
-            message: "Unauthorized"
-        });
-    }
-    if (blacklist.includes(token)) {
-        return res.status(401).json({
-            success: false,
-            message: "Unauthorized"
-        });
-    }
+app.get("/users", async (_, res) => {
     try {
-        decode = jwt.verify(token, process.env.JWT_SECRET_KEY);
-        if (decode) {
-            const users = await User.find().select('username', 'name', 'email');
 
-            res.status(200).json({
-                success: true,
-                data: users
-            });
-        } else {
-            res.status(401).json({
-                success: false,
-                message: "Unauthorized"
-            });
-        }
+        const users = await User.find().select("username name email");
+
+        res.status(200).json({
+            success: true,
+            data: users
+        });
+        
+        res.status(401).json({
+            success: false,
+            message: "Unauthorized"
+        });
+        
     } catch (error) {
         res.status(500).send("Error getting users");
     }
