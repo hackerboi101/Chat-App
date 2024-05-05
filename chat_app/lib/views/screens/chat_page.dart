@@ -1,5 +1,8 @@
 import 'package:chat_app/controllers/authentication_controller.dart';
+import 'package:chat_app/controllers/chat_controller.dart';
 import 'package:chat_app/controllers/profile_controller.dart';
+import 'package:chat_app/controllers/users_controller.dart';
+import 'package:chat_app/views/screens/individual_chat.dart';
 import 'package:chat_app/views/screens/login_page.dart';
 import 'package:chat_app/views/screens/profile_page.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +14,8 @@ class ChatPage extends StatelessWidget {
   final AuthenticationController authenticationController =
       Get.put(AuthenticationController());
   final ProfileController profileController = Get.put(ProfileController());
+  final UsersController usersController = Get.put(UsersController());
+  final ChatController chatController = Get.put(ChatController());
 
   @override
   Widget build(BuildContext context) {
@@ -68,9 +73,74 @@ class ChatPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Container(
-                    width: double.infinity,
-                    color: Theme.of(context).colorScheme.background,
+                  TabBarView(
+                    children: [
+                      Container(
+                        color: Theme.of(context).colorScheme.background,
+                        child: ListView.builder(
+                          itemCount: chatController.chats.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              leading: const Icon(Icons.person),
+                              title: Text(chatController.chats[index].userName),
+                              onTap: () async {
+                                await profileController.getProfile();
+
+                                chatController.messages.clear();
+
+                                chatController.messages.addAll(
+                                  chatController.chats[index].chat,
+                                );
+                                Get.to(
+                                  () => IndividualChat(
+                                    myUserName: profileController
+                                        .profile.value.userName,
+                                    userName:
+                                        chatController.chats[index].userName,
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                      Container(
+                        color: Theme.of(context).colorScheme.background,
+                        child: ListView.builder(
+                          itemCount: usersController.users.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              leading: const Icon(Icons.person),
+                              title: Text(usersController.users[index].name),
+                              subtitle: Text(
+                                usersController.users[index].userName,
+                              ),
+                              onTap: () async {
+                                await profileController.getProfile();
+
+                                chatController.messages.clear();
+
+                                for (var chats in chatController.chats) {
+                                  if (chats.userName ==
+                                      usersController.users[index].userName) {
+                                    chatController.messages.addAll(chats.chat);
+                                  }
+                                }
+
+                                Get.to(
+                                  () => IndividualChat(
+                                    myUserName: profileController
+                                        .profile.value.userName,
+                                    userName:
+                                        usersController.users[index].userName,
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

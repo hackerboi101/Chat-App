@@ -71,6 +71,21 @@ const User = mongoose.model("User", {
     email: String,
     password: String,
     profilepicture: String,
+    chats: [Chats],
+});
+
+//Chat model
+const Chat = mongoose.model("Chat", {
+    username: String,
+    sentat: String,
+    message: String,
+});
+
+//Chats model
+const Chats = mongoose.model("Chats", {
+    socketid: String,
+    username: String,
+    chat: [Chat],
 });
 
 //middleware
@@ -338,5 +353,111 @@ app.post("/user/profile/picture", upload.single("profilepicture") , async (req, 
     } catch (error) {
         console.log(error);
         res.status(500).send("Error editing profile data");
+    }
+});
+
+app.get("/users", async (_, res) => {
+    try {
+        const users = await User.find().select('username name email');
+        res.status(200).json({
+            success: true,
+            data: users
+        });
+    } catch (error) {
+        res.status(500).send("Error getting users");
+    }
+});
+
+app.post("/chats", async (req, res) => {
+    const token = req.headers.authorization.split(" ")[1];
+    if (!token) {
+        return res.status(401).json({
+            success: false,
+            message: "Unauthorized"
+        });
+    }
+    if (blacklist.includes(token)) {
+        return res.status(401).json({
+            success: false,
+            message: "Unauthorized"
+        });
+    }
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+        if (decoded) {
+            const user = await User.findOne({ username: decoded.user.username });
+            if (user) {
+                const { socketid, username, chat } = req.body;
+                const newChats = new Chats({
+                    socketid,
+                    username,
+                    chat
+                });
+                await newChats.save();
+                await user.chats.push(newChats);
+                await user.save();
+                res.status(200).json({
+                    success: true,
+                    data: newChats
+                });
+            } else {
+                res.status(404).json({
+                    success: false,
+                    message: "User not found"
+                });
+            }
+        } else {
+            res.status(401).json({
+                success: false,
+                message: "Unauthorized"
+            });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Error adding chats data");
+    }
+});
+
+app.get("/chats", async (req, res) => {
+    const token = req.headers.authorization.split(" ")[1];
+    if (!token) {
+        return res.status(401).json({
+            success: false,
+            message: "Unauthorized"
+        });
+    }
+    if (blacklist.includes(token)) {
+        return res.status(401).json({
+            success: false,
+            message: "Unauthorized"
+        });
+    }
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+        if (decoded) {
+            const user = await User.findOne({ username: decoded.user.username });
+            if (user) {
+                const chats = await Chats.find({ username: decoded.user.username });
+                res.status(200).json({
+                    success: true,
+                    data: chats
+                });
+            } else {
+                res.status(404).json({
+                    success: false,
+                    message: "User not found"
+                });
+            }
+        } else {
+            res.status(401).json({
+                success: false,
+                message: "Unauthorized"
+            });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Error getting chats data");
     }
 });

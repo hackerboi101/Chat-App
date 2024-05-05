@@ -1,4 +1,5 @@
 import 'package:chat_app/controllers/authentication_controller.dart';
+import 'package:chat_app/controllers/chat_controller.dart';
 import 'package:chat_app/views/screens/chat_page.dart';
 import 'package:chat_app/views/screens/login_page.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,9 @@ class MyApp extends StatelessWidget {
 
   final AuthenticationController authenticationController = Get.put(
     AuthenticationController(),
+  );
+  final ChatController chatController = Get.put(
+    ChatController(),
   );
 
   @override
