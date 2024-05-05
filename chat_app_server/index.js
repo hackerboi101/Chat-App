@@ -379,11 +379,20 @@ app.get("/users", async (req, res) => {
         });
     }
     try {
-        const users = await User.find().select('username name email');
-        res.status(200).json({
-            success: true,
-            data: users
-        });
+        decode = jwt.verify(token, process.env.JWT_SECRET_KEY);
+        if (decode) {
+            const users = await User.find().select("username name email");
+
+            res.status(200).json({
+                success: true,
+                data: users
+            });
+        } else {
+            res.status(401).json({
+                success: false,
+                message: "Unauthorized"
+            });
+        }
     } catch (error) {
         res.status(500).send("Error getting users");
     }
