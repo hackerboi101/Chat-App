@@ -42,8 +42,7 @@ class ChatPage extends StatelessWidget {
           ),
         ],
       ),
-      body: Container(
-        color: Theme.of(context).colorScheme.background,
+      body: SizedBox(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: Column(
@@ -119,52 +118,47 @@ class ChatPage extends StatelessWidget {
                                 ),
                           usersController.filteredUsers.isEmpty
                               ? const SizedBox()
-                              : Container(
-                                  color:
-                                      Theme.of(context).colorScheme.background,
-                                  child: ListView.builder(
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    scrollDirection: Axis.vertical,
-                                    shrinkWrap: true,
-                                    itemCount:
-                                        usersController.filteredUsers.length,
-                                    itemBuilder: (context, index) {
-                                      return ListTile(
-                                        leading: const Icon(Icons.person),
-                                        title: Text(usersController
-                                            .filteredUsers[index].name),
-                                        subtitle: Text(
-                                          usersController
-                                              .filteredUsers[index].userName,
-                                        ),
-                                        onTap: () async {
-                                          await profileController.getProfile();
+                              : ListView.builder(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  scrollDirection: Axis.vertical,
+                                  shrinkWrap: true,
+                                  itemCount:
+                                      usersController.filteredUsers.length,
+                                  itemBuilder: (context, index) {
+                                    return ListTile(
+                                      leading: const Icon(Icons.person),
+                                      title: Text(usersController
+                                          .filteredUsers[index].name),
+                                      subtitle: Text(
+                                        usersController
+                                            .filteredUsers[index].userName,
+                                      ),
+                                      onTap: () async {
+                                        await profileController.getProfile();
 
-                                          chatController.messages.clear();
+                                        chatController.messages.clear();
 
-                                          for (var chats
-                                              in chatController.chats) {
-                                            if (chats.userName ==
-                                                usersController
-                                                    .users[index].userName) {
-                                              chatController.messages
-                                                  .addAll(chats.chat);
-                                            }
+                                        for (var chats
+                                            in chatController.chats) {
+                                          if (chats.userName ==
+                                              usersController
+                                                  .users[index].userName) {
+                                            chatController.messages
+                                                .addAll(chats.chat);
                                           }
+                                        }
 
-                                          Get.to(
-                                            () => IndividualChat(
-                                              myUserName: profileController
-                                                  .profile.value.userName,
-                                              userName: usersController
-                                                  .users[index].userName,
-                                            ),
-                                          );
-                                        },
-                                      );
-                                    },
-                                  ),
+                                        Get.to(
+                                          () => IndividualChat(
+                                            myUserName: profileController
+                                                .profile.value.userName,
+                                            userName: usersController
+                                                .users[index].userName,
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
                                 ),
                         ],
                       ),

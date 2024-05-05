@@ -21,7 +21,7 @@ class ChatController extends GetxController {
 
   @override
   void onInit() async {
-    initializeSocketIO();
+    await initializeSocketIO();
     await getChats();
     super.onInit();
   }
@@ -32,7 +32,7 @@ class ChatController extends GetxController {
     super.dispose();
   }
 
-  void initializeSocketIO() {
+  Future<void> initializeSocketIO() async {
     try {
       socket =
           io("https://chat-app-server-ib5y.onrender.com", <String, dynamic>{
@@ -44,6 +44,7 @@ class ChatController extends GetxController {
       socket.on('connect', (data) {
         debugPrint("connected");
         print(socket.connected);
+        debugPrint('Socket id: ${socket.id}');
       });
 
       socket.on('message', (data) {

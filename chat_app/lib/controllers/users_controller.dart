@@ -20,9 +20,11 @@ class UsersController extends GetxController {
       );
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
-        final List<ProfileModel> users = (data['data'] as List)
-            .map((user) => ProfileModel.fromJson(user))
-            .toList();
+        final List<ProfileModel> users = List<ProfileModel>.from(
+          data['data'].map<ProfileModel>(
+            (x) => ProfileModel.fromJson(x),
+          ),
+        );
         this.users.value = users;
         filteredUsers.value = users;
       } else {

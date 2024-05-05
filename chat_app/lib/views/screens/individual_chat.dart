@@ -106,6 +106,9 @@ class IndividualChat extends StatelessWidget {
                               color: Colors.grey,
                             ),
                           ),
+                          style: const TextStyle(
+                            color: Colors.grey,
+                          ),
                         ),
                       ),
                     ),
