@@ -381,7 +381,7 @@ app.get("/users", async (req, res) => {
     try {
         decode = jwt.verify(token, process.env.JWT_SECRET_KEY);
         if (decode) {
-            const users = await User.find().select("username name email");
+            const users = await User.find().select('username', 'name', 'email');
 
             res.status(200).json({
                 success: true,
