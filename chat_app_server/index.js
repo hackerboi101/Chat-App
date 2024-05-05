@@ -63,17 +63,6 @@ const storage = new GridFsStorage({
 
 const upload = multer({ storage });
 
-
-// User model
-const User = mongoose.model("User", {
-    username: String,
-    name: String,
-    email: String,
-    password: String,
-    profilepicture: String,
-    chats: [Chats],
-});
-
 //Chat model
 const Chat = mongoose.model("Chat", {
     username: String,
@@ -86,6 +75,16 @@ const Chats = mongoose.model("Chats", {
     socketid: String,
     username: String,
     chat: [Chat],
+});
+
+// User model
+const User = mongoose.model("User", {
+    username: String,
+    name: String,
+    email: String,
+    password: String,
+    profilepicture: String,
+    chats: [Chats],
 });
 
 //middleware
