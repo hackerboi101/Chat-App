@@ -365,6 +365,19 @@ app.post("/user/profile/picture", upload.single("profilepicture") , async (req, 
 });
 
 app.get("/users", async (_, res) => {
+    const token = req.headers.authorization.split(" ")[1];
+    if (!token) {
+        return res.status(401).json({
+            success: false,
+            message: "Unauthorized"
+        });
+    }
+    if (blacklist.includes(token)) {
+        return res.status(401).json({
+            success: false,
+            message: "Unauthorized"
+        });
+    }
     try {
         const users = await User.find().select('username name email');
         res.status(200).json({

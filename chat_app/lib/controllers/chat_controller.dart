@@ -34,8 +34,8 @@ class ChatController extends GetxController {
 
   void initializeSocketIO() {
     try {
-      socket = io(
-          "https://chat-app-server-ib5y.onrender.com:5000", <String, dynamic>{
+      socket =
+          io("https://chat-app-server-ib5y.onrender.com", <String, dynamic>{
         'transports': ['websocket'],
         'autoConnect': false,
       });
@@ -67,7 +67,7 @@ class ChatController extends GetxController {
       String username = prefs.getString('username')!;
 
       http.Response response = await http.post(
-        Uri.parse('https://chat-app-server-ib5y.onrender.com:5000/user/chats'),
+        Uri.parse('https://chat-app-server-ib5y.onrender.com/user/chats'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $jwt',
@@ -100,7 +100,7 @@ class ChatController extends GetxController {
       String jwt = prefs.getString('jwt')!;
 
       http.Response response = await http.get(
-        Uri.parse('https://chat-app-server-ib5y.onrender.com:5000/user/chats'),
+        Uri.parse('https://chat-app-server-ib5y.onrender.com/user/chats'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $jwt',

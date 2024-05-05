@@ -42,107 +42,135 @@ class ChatPage extends StatelessWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
+      body: Container(
+        color: Theme.of(context).colorScheme.background,
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            DefaultTabController(
-              length: 2,
-              initialIndex: 0,
-              child: Column(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primary,
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(7),
-                        bottomRight: Radius.circular(7),
-                      ),
-                    ),
-                    child: TabBar(
-                      indicator: BoxDecoration(
-                        color: Theme.of(context).colorScheme.tertiary,
-                        borderRadius: BorderRadius.circular(7),
-                      ),
-                      indicatorSize: TabBarIndicatorSize.tab,
-                      dividerColor: Colors.transparent,
-                      dividerHeight: 0,
-                      tabs: const [
-                        Tab(text: 'Chats'),
-                        Tab(text: 'Contacts'),
-                      ],
-                    ),
-                  ),
-                  TabBarView(
-                    children: [
-                      Container(
-                        color: Theme.of(context).colorScheme.background,
-                        child: ListView.builder(
-                          itemCount: chatController.chats.length,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              leading: const Icon(Icons.person),
-                              title: Text(chatController.chats[index].userName),
-                              onTap: () async {
-                                await profileController.getProfile();
-
-                                chatController.messages.clear();
-
-                                chatController.messages.addAll(
-                                  chatController.chats[index].chat,
-                                );
-                                Get.to(
-                                  () => IndividualChat(
-                                    myUserName: profileController
-                                        .profile.value.userName,
-                                    userName:
-                                        chatController.chats[index].userName,
-                                  ),
-                                );
-                              },
-                            );
-                          },
+            Expanded(
+              child: DefaultTabController(
+                length: 2,
+                initialIndex: 0,
+                child: Column(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primary,
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(7),
+                          bottomRight: Radius.circular(7),
                         ),
                       ),
-                      Container(
-                        color: Theme.of(context).colorScheme.background,
-                        child: ListView.builder(
-                          itemCount: usersController.users.length,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              leading: const Icon(Icons.person),
-                              title: Text(usersController.users[index].name),
-                              subtitle: Text(
-                                usersController.users[index].userName,
-                              ),
-                              onTap: () async {
-                                await profileController.getProfile();
-
-                                chatController.messages.clear();
-
-                                for (var chats in chatController.chats) {
-                                  if (chats.userName ==
-                                      usersController.users[index].userName) {
-                                    chatController.messages.addAll(chats.chat);
-                                  }
-                                }
-
-                                Get.to(
-                                  () => IndividualChat(
-                                    myUserName: profileController
-                                        .profile.value.userName,
-                                    userName:
-                                        usersController.users[index].userName,
-                                  ),
-                                );
-                              },
-                            );
-                          },
+                      child: TabBar(
+                        indicator: BoxDecoration(
+                          color: Theme.of(context).colorScheme.tertiary,
+                          borderRadius: BorderRadius.circular(7),
                         ),
+                        indicatorSize: TabBarIndicatorSize.tab,
+                        dividerColor: Colors.transparent,
+                        dividerHeight: 0,
+                        tabs: const [
+                          Tab(text: 'Chats'),
+                          Tab(text: 'Contacts'),
+                        ],
                       ),
-                    ],
-                  ),
-                ],
+                    ),
+                    Expanded(
+                      child: TabBarView(
+                        children: [
+                          chatController.chats.isEmpty
+                              ? const SizedBox()
+                              : Container(
+                                  color:
+                                      Theme.of(context).colorScheme.background,
+                                  child: ListView.builder(
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    scrollDirection: Axis.vertical,
+                                    shrinkWrap: true,
+                                    itemCount: chatController.chats.length,
+                                    itemBuilder: (context, index) {
+                                      return ListTile(
+                                        leading: const Icon(Icons.person),
+                                        title: Text(chatController
+                                            .chats[index].userName),
+                                        onTap: () async {
+                                          await profileController.getProfile();
+
+                                          chatController.messages.clear();
+
+                                          chatController.messages.addAll(
+                                            chatController.chats[index].chat,
+                                          );
+                                          Get.to(
+                                            () => IndividualChat(
+                                              myUserName: profileController
+                                                  .profile.value.userName,
+                                              userName: chatController
+                                                  .chats[index].userName,
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ),
+                          usersController.filteredUsers.isEmpty
+                              ? const SizedBox()
+                              : Container(
+                                  color:
+                                      Theme.of(context).colorScheme.background,
+                                  child: ListView.builder(
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    scrollDirection: Axis.vertical,
+                                    shrinkWrap: true,
+                                    itemCount:
+                                        usersController.filteredUsers.length,
+                                    itemBuilder: (context, index) {
+                                      return ListTile(
+                                        leading: const Icon(Icons.person),
+                                        title: Text(usersController
+                                            .filteredUsers[index].name),
+                                        subtitle: Text(
+                                          usersController
+                                              .filteredUsers[index].userName,
+                                        ),
+                                        onTap: () async {
+                                          await profileController.getProfile();
+
+                                          chatController.messages.clear();
+
+                                          for (var chats
+                                              in chatController.chats) {
+                                            if (chats.userName ==
+                                                usersController
+                                                    .users[index].userName) {
+                                              chatController.messages
+                                                  .addAll(chats.chat);
+                                            }
+                                          }
+
+                                          Get.to(
+                                            () => IndividualChat(
+                                              myUserName: profileController
+                                                  .profile.value.userName,
+                                              userName: usersController
+                                                  .users[index].userName,
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

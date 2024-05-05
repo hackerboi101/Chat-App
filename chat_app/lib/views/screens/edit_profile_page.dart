@@ -40,7 +40,7 @@ class EditProfilePage extends StatelessWidget {
                     children: [
                       profileController.isProfilePicture.value
                           ? Image.network(
-                              'http://192.168.0.171:5000/uploads/${profileController.profilePictureUrl.value}',
+                              'https://chat-app-server-ib5y.onrender.com/uploads/${profileController.profilePictureUrl.value}',
                               width: 100,
                               height: 100,
                               fit: BoxFit.cover,

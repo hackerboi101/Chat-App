@@ -28,8 +28,7 @@ class ProfileController extends GetxController {
       String jwt = prefs.getString('jwt')!;
 
       http.Response response = await http.get(
-        Uri.parse(
-            'https://chat-app-server-ib5y.onrender.com:5000/user/profile'),
+        Uri.parse('https://chat-app-server-ib5y.onrender.com/user/profile'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $jwt',
@@ -66,8 +65,7 @@ class ProfileController extends GetxController {
       String email = emailController.text.trim();
 
       http.Response response = await http.put(
-        Uri.parse(
-            'https://chat-app-server-ib5y.onrender.com:5000/user/profile'),
+        Uri.parse('https://chat-app-server-ib5y.onrender.com/user/profile'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $jwt',
@@ -131,7 +129,7 @@ class ProfileController extends GetxController {
       var request = http.MultipartRequest(
         'POST',
         Uri.parse(
-            'https://chat-app-server-ib5y.onrender.com:5000/user/profile/picture'),
+            'https://chat-app-server-ib5y.onrender.com/user/profile/picture'),
       );
 
       request.headers.addAll(<String, String>{

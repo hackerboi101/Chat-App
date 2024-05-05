@@ -39,7 +39,7 @@ class ProfilePage extends StatelessWidget {
                   radius: 50,
                   child: profileController.isProfilePicture.value
                       ? Image.network(
-                          'http://192.168.0.171:5000/uploads/${profileController.profilePictureUrl.value}',
+                          'https://chat-app-server-ib5y.onrender.com/uploads/${profileController.profilePictureUrl.value}',
                           height: 100,
                           width: 100,
                           fit: BoxFit.cover,

@@ -86,36 +86,7 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 30),
-              SizedBox(
-                width: double.infinity,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Obx(
-                      () => SizedBox(
-                        height: 22,
-                        width: 22,
-                        child: Checkbox(
-                          value: authenticationController.rememberMe.value,
-                          onChanged: (value) => authenticationController
-                              .rememberMe.value = value!,
-                          activeColor: Colors.white,
-                          checkColor: Colors.black,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 5),
-                    const Text(
-                      'Remember me',
-                      style: TextStyle(
-                        color: Color.fromRGBO(97, 97, 97, 1),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 70),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
