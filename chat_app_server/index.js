@@ -374,16 +374,6 @@ app.get("/users", async (_, res) => {
             data: users
         });
         
-        res.status(401).json({
-            success: false,
-            message: "Unauthorized"
-        });
-
-        res.status(502).json({
-            success: false,
-            message: "Error getting users"
-        });
-        
     } catch (error) {
         res.status(500).send("Error getting users");
     }
